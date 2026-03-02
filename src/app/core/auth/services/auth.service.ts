@@ -20,9 +20,8 @@ import { User } from '../../../model/user';
 })
 export class AuthService {
   private firebaseService = inject(FirebaseService);
-  private auth = this.firebaseService.auth;
-
   private userService = inject(UserService);
+  private auth = this.firebaseService.auth;
 
   private user = new BehaviorSubject<FirebaseUser | null | undefined>(undefined);
   user$ = this.user.asObservable();
@@ -66,7 +65,14 @@ export class AuthService {
 
   async signInWithGoogle() {
     try {
-      await signInWithPopup(this.auth, new GoogleAuthProvider());
+      const result = await signInWithPopup(this.auth, new GoogleAuthProvider());
+      const user = result.user;
+      const [name, surname] = user.displayName?.split(' ')!;
+      await this.userService.createUser(user.uid, {
+        email: user.email!,
+        name,
+        surname,
+      });
     } catch (err: any) {
       throw this.customError(err.code);
     }

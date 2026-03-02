@@ -1,3 +1,34 @@
-<p>
-  create-chat works!
-</p>
+<form [formGroup]="createChatForm" (ngSubmit)="onSubmit()">
+  <ion-input
+    label="Title"
+    labelPlacement="floating"
+    id="title"
+    type="text"
+    formControlName="title"
+    placeholder="Put a title"
+    fill="outline"
+  ></ion-input>
+
+  <ion-list>
+    @for (user of users(); track user.uid) {
+      <ion-item>
+        <ion-label>{{ displayName(user) }}</ion-label>
+        <ion-checkbox
+          slot="end"
+          (ionChange)="toggleParticipant(user)"
+          [checked]="isSelected(user)"
+        ></ion-checkbox>
+      </ion-item>
+    }
+  </ion-list>
+
+  <ion-button type="submit" [disabled]="createChatForm.invalid">Create chat</ion-button>
+
+  <div>
+    @for (user of createChatForm.value.participants; track user.uid) {
+      <ion-chip>
+        <ion-label>{{ displayName(user) }}</ion-label>
+      </ion-chip>
+    }
+  </div>
+</form>

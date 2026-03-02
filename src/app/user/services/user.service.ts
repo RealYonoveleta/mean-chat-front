@@ -1,5 +1,6 @@
 import { inject, Injectable } from '@angular/core';
-import { doc, getDoc, setDoc } from 'firebase/firestore';
+import { collection, doc, getDoc, getDocs, setDoc } from 'firebase/firestore';
+import { BehaviorSubject, from, Observable } from 'rxjs';
 import { FirestoreService } from '../../core/firebase/services/firestore.service';
 import { User } from '../../model/user';
 
@@ -12,15 +13,42 @@ export class UserService {
 
   private collection: string = 'users';
 
+  private user = new BehaviorSubject<User | null>(null);
+  user$ = this.user.asObservable();
+
   private userDoc(uid: string) {
     return doc(this.firestore, this.collection, uid);
   }
 
-  createUser(uid: string, user: User) {
-    return setDoc(this.userDoc(uid), user);
+  async createUser(uid: string, user: User) {
+    const userRef = this.userDoc(uid);
+    const userSnap = await getDoc(userRef);
+
+    if (!userSnap.exists()) {
+      await setDoc(userRef, user);
+    }
   }
 
   getUser(uid: string) {
-    return getDoc(this.userDoc(uid));
+    const userPromise = getDoc(this.userDoc(uid)).then((user) => {
+      return { uid, ...user.data() } as User;
+    });
+    return from(userPromise);
+  }
+
+  getAllUsers(): Observable<User[]> {
+    const usersRef = collection(this.firestore, this.collection);
+
+    const usersPromise = getDocs(usersRef).then((snapshot) =>
+      snapshot.docs.map(
+        (doc) =>
+          ({
+            uid: doc.id,
+            ...doc.data(),
+          }) as User,
+      ),
+    );
+
+    return from(usersPromise);
   }
 }

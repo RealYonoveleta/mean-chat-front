@@ -51,7 +51,7 @@
     ></app-form-error>
   </section>
 
-  <ion-button type="submit">Sign in</ion-button>
+  <ion-button type="submit" [disabled]="loginForm.invalid">Sign in</ion-button>
 
   <section>
     <ion-button (click)="loginWithGoogle()" class="google-btn">
