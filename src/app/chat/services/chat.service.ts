@@ -1,6 +1,4 @@
 import { inject, Injectable } from '@angular/core';
-import { BehaviorSubject, Observable, of } from 'rxjs';
-import { Chat } from '../../model/chat';
 import {
   addDoc,
   collection,
@@ -9,17 +7,20 @@ import {
   onSnapshot,
   orderBy,
   query,
-  setDoc,
-  Timestamp,
   where,
 } from 'firebase/firestore';
+import { BehaviorSubject, Observable } from 'rxjs';
 import { FirestoreService } from '../../core/firebase/services/firestore.service';
+import { Chat } from '../../model/chat';
+import { NotificationService } from '../../shared/services/notification.service';
 
 @Injectable({
   providedIn: 'root',
 })
 export class ChatService {
   private firestoreService = inject(FirestoreService);
+  private notificationService = inject(NotificationService);
+
   private firestore = this.firestoreService.firestore;
 
   private collection: string = 'chats';
@@ -59,6 +60,7 @@ export class ChatService {
   async createChat(chat: Chat) {
     const chatCollection = collection(this.firestore, this.collection);
     await addDoc(chatCollection, chat);
+    this.notificationService.showToast(`Chat ${chat.title} created successfully`);
   }
 
   getChat(uid: string) {

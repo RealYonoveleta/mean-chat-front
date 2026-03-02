@@ -77,5 +77,6 @@ export class CreateChatComponent {
     };
 
     this.charService.createChat(chat);
+    this.createChatForm.reset();
   }
 }
