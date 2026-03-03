@@ -1,0 +1,45 @@
+@use 'colors';
+
+:host {
+  box-sizing: border-box;
+  padding: 15px;
+  border-radius: 10px;
+  width: auto;
+  max-width: 70%;
+  position: relative;
+
+  &:not(.grouped)::after {
+    content: '';
+    position: absolute;
+    bottom: 6px;
+    width: 12px;
+    height: 12px;
+    background: inherit;
+  }
+
+  &.other {
+    background: colors.$message-bg;
+
+    &:not(.grouped)::after {
+      left: -6px;
+      clip-path: polygon(100% 0, 0 50%, 100% 100%);
+    }
+  }
+
+  &.self {
+    color: colors.$secondary-text;
+    background: colors.$button-primary;
+    align-self: flex-end;
+
+    &::after {
+      right: -6px;
+      clip-path: polygon(0 0, 100% 50%, 0 100%);
+    }
+  }
+}
+
+.user-display-name {
+  display: block;
+  font-weight: 600;
+  margin-bottom: 5px;
+}
