@@ -1,7 +1,8 @@
-import { Component, effect, inject, signal } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { RouterLink } from '@angular/router';
 import { IonicModule } from '@ionic/angular';
+import { of, switchMap } from 'rxjs';
 import { CurrentUserService } from '../../../core/user/current-user.service';
 import { Chat } from '../../../model/chat';
 import { ChatService } from '../../services/chat.service';
@@ -18,18 +19,11 @@ export class ChatListComponent {
   private chatService = inject(ChatService);
   private currentUserService = inject(CurrentUserService);
 
-  user = toSignal(this.currentUserService.currentUser$);
-  chats = signal<Chat[]>([]);
+  private chats$ = this.currentUserService.currentUser$.pipe(
+    switchMap((user) => (user ? this.chatService.getChats(user.uid!) : of([]))),
+  );
 
-  subscribeToChats = effect((onCleanup) => {
-    const user = this.user();
-    if (!user) return;
-
-    const chats$ = this.chatService.getChats(user.uid!);
-    const sub = chats$.subscribe((chats) => this.chats.set(chats));
-
-    onCleanup(() => sub.unsubscribe());
-  });
+  chats = toSignal(this.chats$, { initialValue: [] });
 
   onSelect(chat: Chat) {
     this.chatService.setActiveChat(chat);

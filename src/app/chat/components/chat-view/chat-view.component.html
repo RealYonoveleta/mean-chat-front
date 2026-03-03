@@ -1,2 +1,13 @@
-<app-chat-header [chat]="chat()"></app-chat-header>
-<p>chat-view works!</p>
+<ion-header>
+  <app-chat-header [chat]="chat()"></app-chat-header>
+</ion-header>
+
+<div class="message-list">
+  <ion-content #content [scrollEvents]="true" (ionScroll)="onScroll()">
+    <app-message-list [messages]="messages()"></app-message-list>
+  </ion-content>
+</div>
+
+<ion-footer>
+  <app-chat-input [chat]="chat()!"></app-chat-input>
+</ion-footer>

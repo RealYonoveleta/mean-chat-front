@@ -6,6 +6,7 @@ $border-radius: 20px;
   box-sizing: border-box;
   display: flex;
   flex-direction: column;
+  height: 100%;
 }
 
 app-chat-header {
@@ -13,4 +14,16 @@ app-chat-header {
   border-top-left-radius: $border-radius;
   border-top-right-radius: $border-radius;
   background-color: colors.$secondary-bg;
+}
+
+.message-list {
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+}
+
+ion-footer {
+  height: 80px;
+  border-bottom-left-radius: $border-radius;
+  border-bottom-right-radius: $border-radius;
 }

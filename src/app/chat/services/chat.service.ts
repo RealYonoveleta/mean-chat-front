@@ -36,19 +36,19 @@ export class ChatService {
     this.chat.next(chat);
   }
 
-  getChats(uid: string) {
+  getChats(uid: string): Observable<Chat[]> {
     const queryRef = query(
       collection(this.firestore, this.collection),
       where('participants', 'array-contains', uid),
       orderBy('updatedAt', 'desc'),
     );
 
-    return new Observable<any[]>((observer) => {
+    return new Observable<Chat[]>((observer) => {
       const unsubscribe = onSnapshot(
         queryRef,
         (snapshot) => {
           const data = snapshot.docs.map((doc) => ({ uid: doc.id, ...doc.data() }));
-          observer.next(data);
+          observer.next(data as Chat[]);
         },
         (error) => observer.error(error),
       );

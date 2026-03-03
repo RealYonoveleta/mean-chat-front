@@ -1,6 +1,7 @@
 import { Timestamp } from 'firebase/firestore';
 
 export interface Chat {
+  uid?: string;
   title: string;
   participants: string[];
   lastMessage: string;

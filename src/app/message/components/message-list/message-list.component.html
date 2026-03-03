@@ -1,0 +1,9 @@
+@for (message of messages(); track message.uid) {
+  <div
+    class="message"
+    [class]="message.senderId === user()?.uid ? 'self' : 'other'"
+    [class.grouped]="isGrouped($index)"
+  >
+    <span>{{ message.content }}</span>
+  </div>
+}
