@@ -10,15 +10,20 @@ import {
   QueryDocumentSnapshot,
   startAfter,
 } from 'firebase/firestore';
-import { Observable } from 'rxjs';
+import { firstValueFrom, Observable } from 'rxjs';
+import { ChatService } from '../../chat/services/chat.service';
 import { FirebaseService } from '../../core/firebase/services/firebase.service';
 import { Message } from '../../model/message';
+import { CurrentUserService } from '../../core/user/current-user.service';
 
 @Injectable({
   providedIn: 'root',
 })
 export class MessageService {
   private firestoreService = inject(FirebaseService);
+  private chatService = inject(ChatService);
+  private currentUserService = inject(CurrentUserService);
+
   private firestore = this.firestoreService.firestore;
 
   private collectionName: string = 'messages';
@@ -29,9 +34,16 @@ export class MessageService {
     return collection(this.firestore, `chats/${chatId}/${this.collectionName}`);
   }
 
-  createMessage(chatId: string, message: Message) {
+  async createMessage(chatId: string, message: Message) {
     const messageCollection = this.getCollection(chatId);
-    addDoc(messageCollection, message);
+    await addDoc(messageCollection, message);
+
+    const user = await firstValueFrom(this.currentUserService.currentUser$);
+    const displayName = user.uid === message.senderId ? 'You' : message.senderDisplayName;
+
+    await this.chatService.updateChat(chatId, {
+      lastMessage: `${displayName}: ${message.content}`,
+    });
   }
 
   getLatestMessages(chatId: string, limitCount: number = 30) {

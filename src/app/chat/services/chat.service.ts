@@ -7,6 +7,7 @@ import {
   onSnapshot,
   orderBy,
   query,
+  updateDoc,
   where,
 } from 'firebase/firestore';
 import { BehaviorSubject, Observable } from 'rxjs';
@@ -65,5 +66,10 @@ export class ChatService {
 
   getChat(uid: string) {
     return getDoc(this.chatDoc(uid));
+  }
+
+  async updateChat(uid: string, partialChat: Partial<Chat>) {
+    const docRef = this.chatDoc(uid);
+    await updateDoc(docRef, partialChat);
   }
 }

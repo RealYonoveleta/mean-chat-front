@@ -7,6 +7,7 @@ import { Message } from '../../../model/message';
 import { CurrentUserService } from '../../../core/user/current-user.service';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { Timestamp } from 'firebase/firestore';
+import { ChatService } from '../../services/chat.service';
 
 @Component({
   selector: 'app-chat-input',
@@ -21,22 +22,24 @@ export class ChatInputComponent {
 
   private user = toSignal(this.currentUserService.currentUser$);
 
-  chat = input<Chat>();
+  chat = input.required<Chat>();
 
   sendMessageForm = this.fb.nonNullable.group({
     message: ['', [Validators.required]],
   });
 
-  sendMessage() {
+  async sendMessage() {
     if (!this.sendMessageForm.valid) return;
 
     const message: Message = {
       senderId: this.user()?.uid!,
+      senderDisplayName: `${this.user()?.name} ${this.user()?.surname}`,
       content: this.sendMessageForm.value.message || '',
       createdAt: Timestamp.now(),
     };
 
-    this.messageService.createMessage(this.chat()?.uid!, message);
+    await this.messageService.createMessage(this.chat()?.uid!, message);
+
     this.sendMessageForm.reset();
   }
 }
