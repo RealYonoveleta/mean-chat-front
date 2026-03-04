@@ -100,7 +100,7 @@
     ></app-form-error>
   </section>
 
-  <ion-button type="submit">Create</ion-button>
+  <ion-button type="submit" [disabled]="signupForm.invalid">Create</ion-button>
 
   <section>
     <span class="text-center">Already have an account? <a routerLink="/auth/login">Log in</a></span>

@@ -1,0 +1,8 @@
+@for (message of messages(); track message.uid) {
+  <app-message-item
+    [message]="message"
+    [isGrouped]="isGrouped($index)"
+    [isFirstOfGroup]="isFirstOfGroup($index)"
+    [isSelf]="message.senderId === user()?.uid"
+  ></app-message-item>
+}

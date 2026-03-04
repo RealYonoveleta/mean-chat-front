@@ -14,6 +14,7 @@ export const routes: Routes = [
     path: 'home',
     component: ChatHomeComponent,
     canActivate: [homeGuard],
+    loadChildren: () => import('./chat/chat.routes')
   },
   {
     path: '',

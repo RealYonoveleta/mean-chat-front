@@ -1,0 +1,40 @@
+<form [formGroup]="createChatForm" (ngSubmit)="onSubmit()">
+  <ion-input
+    label="Title"
+    labelPlacement="floating"
+    id="title"
+    type="text"
+    formControlName="title"
+    placeholder="Put a title"
+    fill="outline"
+  ></ion-input>
+
+  <div class="users">
+    <ion-content>
+      <ion-list>
+        @for (user of users(); track user.uid) {
+          <ion-item>
+            <ion-label>{{ displayName(user) }}</ion-label>
+            <ion-checkbox
+              slot="end"
+              (ionChange)="toggleParticipant(user)"
+              [checked]="isSelected(user)"
+            ></ion-checkbox>
+          </ion-item>
+        }
+      </ion-list>
+    </ion-content>
+  </div>
+
+  <div class="participants">
+    <ion-content>
+      @for (user of createChatForm.value.participants; track user.uid) {
+        <ion-chip>
+          <ion-label>{{ displayName(user) }}</ion-label>
+        </ion-chip>
+      }
+    </ion-content>
+  </div>
+
+  <ion-button type="submit" [disabled]="createChatForm.invalid">Create chat</ion-button>
+</form>

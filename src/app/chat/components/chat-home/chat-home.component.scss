@@ -1,0 +1,34 @@
+@use 'colors';
+
+:host {
+  display: grid;
+  grid-template-columns: min(300px, 30%) 1fr;
+  grid-template-rows: 80px 1fr;
+  height: 100vh;
+  background-color: colors.$app-background;
+  box-sizing: border-box;
+  padding: 20px;
+
+  grid-template-areas:
+    'account view'
+    'list view';
+}
+
+app-chat-list,
+app-account-panel {
+  color: colors.$secondary-text;
+}
+
+app-account-panel {
+  grid-area: account;
+}
+
+app-chat-list {
+  grid-area: list;
+}
+
+.main-view {
+  grid-area: view;
+  border-radius: 20px;
+  background-color: colors.$tertiary-bg;
+}

@@ -1,0 +1,11 @@
+<ion-content>
+  <ion-list id="chat-list">
+    @for (chat of chats(); track chat.uid) {
+      <ion-item button class="chat-item" (click)="onSelect(chat)" [routerLink]="[chat.title]">
+        <app-chat-widget [chat]="chat"></app-chat-widget>
+      </ion-item>
+    }
+  </ion-list>
+</ion-content>
+
+<app-chat-list-actions></app-chat-list-actions>
