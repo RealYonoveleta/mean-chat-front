@@ -1,7 +1,5 @@
-import { Component, computed, inject, input, OnInit, signal } from '@angular/core';
+import { Component, computed, input } from '@angular/core';
 import { Message } from '../../../model/message';
-import { User } from '../../../model/user';
-import { UserService } from '../../../user/services/user.service';
 
 @Component({
   selector: 'app-message-item',
@@ -13,18 +11,11 @@ import { UserService } from '../../../user/services/user.service';
     '[class.first]': 'isFirstOfGroup()',
   },
 })
-export class MessageItemComponent implements OnInit {
+export class MessageItemComponent {
   message = input.required<Message>();
   isFirstOfGroup = input<boolean>();
   isGrouped = input<boolean>();
   isSelf = input<boolean>();
 
-  private userService = inject(UserService);
-
-  user = signal<User | null>(null);
-  userDisplayName = computed(() => `${this.user()?.name} ${this.user()?.surname}`);
-
-  ngOnInit() {
-    this.userService.getUser(this.message().senderId).subscribe((user) => this.user.set(user));
-  }
+  userDisplayName = computed(() => this.message().senderDisplayName);
 }
