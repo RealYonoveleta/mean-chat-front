@@ -1,13 +1,12 @@
 import { Component, inject, input } from '@angular/core';
-import { IonicModule } from '@ionic/angular';
-import { MessageService } from '../../../message/services/message.service';
+import { toSignal } from '@angular/core/rxjs-interop';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
+import { IonicModule } from '@ionic/angular';
+import { Timestamp } from 'firebase/firestore';
+import { CurrentUserService } from '../../../core/user/current-user.service';
+import { MessageService } from '../../../message/services/message.service';
 import { Chat } from '../../../model/chat';
 import { Message } from '../../../model/message';
-import { CurrentUserService } from '../../../core/user/current-user.service';
-import { toSignal } from '@angular/core/rxjs-interop';
-import { Timestamp } from 'firebase/firestore';
-import { ChatService } from '../../services/chat.service';
 
 @Component({
   selector: 'app-chat-input',
