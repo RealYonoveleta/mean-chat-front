@@ -1,4 +1,4 @@
-import { Component, inject, OnInit, viewChild } from '@angular/core';
+import { Component, DestroyRef, inject, OnInit, viewChild } from '@angular/core';
 import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { IonContent, IonicModule } from '@ionic/angular';
 import { MessageListComponent } from '../../../message/components/message-list/message-list.component';
@@ -18,6 +18,7 @@ import { Message } from '../../../model/message';
 export class ChatViewComponent implements OnInit {
   private chatService = inject(ChatService);
   private messageService = inject(MessageService);
+  private destroyRef = inject(DestroyRef);
 
   chat = toSignal(this.chatService.chat$, { initialValue: null });
 
@@ -35,7 +36,7 @@ export class ChatViewComponent implements OnInit {
       .pipe(
         switchMap((chat) => (chat ? this.messageService.getLatestMessages(chat.uid!) : of([]))),
         tap(() => this.scrollToBottom()),
-        takeUntilDestroyed(),
+        takeUntilDestroyed(this.destroyRef),
       )
       .subscribe((messages) => this.messagesSubject.next(messages));
   }
