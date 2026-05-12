@@ -23,7 +23,7 @@ app-chat-header {
 }
 
 ion-footer {
-  height: 100px;
   border-bottom-left-radius: $border-radius;
   border-bottom-right-radius: $border-radius;
+  overflow: hidden;
 }

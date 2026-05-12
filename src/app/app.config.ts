@@ -7,12 +7,14 @@ import { provideIonicAngular } from '@ionic/angular/standalone';
 import { authInterceptor } from './core/interceptors/auth.interceptor';
 
 import { addIcons } from 'ionicons';
-import { logOutOutline, addCircleOutline, send } from 'ionicons/icons';
+import { logOutOutline, addCircleOutline, send, happy, location } from 'ionicons/icons';
 
 addIcons({
   logOutOutline,
   addCircleOutline,
   send,
+  happy,
+  location,
 });
 
 export const appConfig: ApplicationConfig = {

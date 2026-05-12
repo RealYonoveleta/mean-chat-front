@@ -17,12 +17,20 @@ export class ChatService {
   private chat = new BehaviorSubject<Chat | null>(null);
   chat$ = this.chat.asObservable();
 
+  get currentChat(): Chat | null {
+    return this.chat.getValue();
+  }
+
   setActiveChat(chat: Chat): void {
     this.chat.next(chat);
   }
 
   getChats(): Observable<Chat[]> {
     return this.http.get<Chat[]>(`${environment.apiUrl}/chat`);
+  }
+
+  getChatById(id: string): Observable<Chat> {
+    return this.http.get<Chat>(`${environment.apiUrl}/chat/${id}`);
   }
 
   async createChat(members: string[], name: string, isGroup: boolean): Promise<void> {

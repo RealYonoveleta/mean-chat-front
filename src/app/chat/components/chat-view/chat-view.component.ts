@@ -9,6 +9,7 @@ import { BehaviorSubject, switchMap, tap } from 'rxjs';
 import { MessageService } from '../../../message/services/message.service';
 import { Message } from '../../../model/message';
 import { SocketService } from '../../../core/socket/socket.service';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-chat-view',
@@ -21,6 +22,7 @@ export class ChatViewComponent implements OnInit, OnDestroy {
   private messageService = inject(MessageService);
   private socketService = inject(SocketService);
   private destroyRef = inject(DestroyRef);
+  private route = inject(ActivatedRoute);
 
   chat = toSignal(this.chatService.chat$, { initialValue: null });
 
@@ -33,6 +35,16 @@ export class ChatViewComponent implements OnInit, OnDestroy {
   private currentPage = 1;
 
   ngOnInit(): void {
+    // On page refresh the service state is empty — hydrate from the route param
+    if (!this.chatService.currentChat) {
+      const chatId = this.route.snapshot.paramMap.get('chatId');
+      if (chatId) {
+        this.chatService.getChatById(chatId)
+          .pipe(takeUntilDestroyed(this.destroyRef))
+          .subscribe((chat) => this.chatService.setActiveChat(chat));
+      }
+    }
+
     // Load message history when active chat changes, join socket room
     this.chatService.chat$
       .pipe(

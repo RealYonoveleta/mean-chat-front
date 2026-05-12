@@ -1,0 +1,3 @@
+@for (emoji of emojis(); track emoji.name) {
+  <button class="emoji" (click)="selectEmoji(emoji)">{{ emoji.emoji }}</button>
+}

@@ -1,13 +1,25 @@
 <form class="container" [formGroup]="sendMessageForm" (ngSubmit)="sendMessage()">
   <div class="input-actions">
+    <ion-button (click)="toggleExpressionPicker()" fill="clear" shape="round">
+      <ion-icon name="happy" slot="icon-only"></ion-icon>
+    </ion-button>
     <ion-input
+      #input
       id="text-input"
       placeholder="Message"
       fill="solid"
       formControlName="message"
     ></ion-input>
+    <ion-button (click)="sendLocation()" fill="clear" shape="round">
+      <ion-icon name="location" slot="icon-only"></ion-icon>
+    </ion-button>
   </div>
   <ion-button type="submit">
     <ion-icon name="send"></ion-icon>
   </ion-button>
 </form>
+
+<app-expression-picker
+  class="expression-picker"
+  [class.open]="expressionPickerOpened()"
+></app-expression-picker>

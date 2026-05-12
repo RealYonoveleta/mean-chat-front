@@ -1,0 +1,19 @@
+:host {
+  display: grid;
+  grid-template-columns: repeat(8, 1fr);
+  padding: 10px;
+}
+
+.emoji {
+  background: transparent;
+  box-sizing: border-box;
+  padding: 10px;
+  font-size: 24px;
+  border: none;
+  cursor: pointer;
+
+  &:hover {
+    background: rgba(0, 0, 0, 0.05);
+    border-radius: 8px;
+  }
+}

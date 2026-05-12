@@ -1,4 +1,4 @@
 @if (isFirstOfGroup() && !isSelf()) {
   <span class="user-display-name">{{ userDisplayName() }}</span>
 }
-<span class="content">{{ message()!.content }}</span>
+<ng-container *ngComponentOutlet="msgComponent(); inputs: { content: message().content }"></ng-container>

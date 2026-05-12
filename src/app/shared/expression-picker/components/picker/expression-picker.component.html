@@ -1,0 +1,29 @@
+<ion-header>
+  <div class="picker-buttons">
+    <ion-button
+      fill="clear"
+      [color]="activeTab() === TabType.Emoji ? 'primary' : 'medium'"
+      (click)="setTab(TabType.Emoji)"
+    >
+      <ion-icon name="happy" slot="icon-only"></ion-icon>
+    </ion-button>
+    <ion-button
+      fill="clear"
+      [color]="activeTab() === TabType.Gif ? 'primary' : 'medium'"
+      (click)="setTab(TabType.Gif)"
+    >
+      GIF
+    </ion-button>
+    <ion-button
+      fill="clear"
+      [color]="activeTab() === TabType.Sticker ? 'primary' : 'medium'"
+      (click)="setTab(TabType.Sticker)"
+    >
+      Sticker
+    </ion-button>
+  </div>
+</ion-header>
+
+<ion-content class="picker-content">
+  <ng-container *ngComponentOutlet="getTab()"></ng-container>
+</ion-content>
