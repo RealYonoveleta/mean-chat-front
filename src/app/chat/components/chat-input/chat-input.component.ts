@@ -32,6 +32,10 @@ export class ChatInputComponent {
   });
 
   expressionPickerOpened = signal<boolean>(false);
+  pickerHeight = signal<number>(320);
+
+  private readonly MIN_PICKER_HEIGHT = 150;
+  private readonly MAX_PICKER_HEIGHT = 600;
 
   constructor() {
     effect(async () => {
@@ -68,6 +72,26 @@ export class ChatInputComponent {
 
   toggleExpressionPicker(): void {
     this.expressionPickerOpened.set(!this.expressionPickerOpened());
+  }
+
+  onPickerDragStart(e: PointerEvent): void {
+    const startY = e.clientY;
+    const startHeight = this.pickerHeight();
+
+    const onMove = (ev: PointerEvent) => {
+      const delta = startY - ev.clientY;
+      const clamped = Math.min(this.MAX_PICKER_HEIGHT, Math.max(this.MIN_PICKER_HEIGHT, startHeight + delta));
+      this.pickerHeight.set(clamped);
+    };
+
+    const onUp = () => {
+      document.removeEventListener('pointermove', onMove);
+      document.removeEventListener('pointerup', onUp);
+    };
+
+    document.addEventListener('pointermove', onMove);
+    document.addEventListener('pointerup', onUp);
+    e.preventDefault();
   }
 
   sendMessage(): void {

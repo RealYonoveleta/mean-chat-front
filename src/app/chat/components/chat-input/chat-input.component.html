@@ -19,7 +19,12 @@
   </ion-button>
 </form>
 
-<app-expression-picker
+<div
   class="expression-picker"
-  [class.open]="expressionPickerOpened()"
-></app-expression-picker>
+  [style.height]="expressionPickerOpened() ? pickerHeight() + 'px' : '0'"
+>
+  <div class="drag-handle" (pointerdown)="onPickerDragStart($event)">
+    <div class="drag-pill"></div>
+  </div>
+  <app-expression-picker style="flex: 1; overflow: hidden"></app-expression-picker>
+</div>

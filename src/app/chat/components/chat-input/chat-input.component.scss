@@ -28,26 +28,28 @@
 }
 
 .expression-picker {
-  height: 0;
   box-sizing: border-box;
   display: flex;
   flex-direction: column;
   transition: height 200ms ease;
   overflow: hidden;
 
-  &.open {
-    height: 320px;
+  .drag-handle {
+    height: 20px;
+    cursor: ns-resize;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: white;
+    touch-action: none;
+    user-select: none;
   }
 
-  @media (min-height: 1024px) {
-    &.open {
-      height: 500px;
-    }
-  }
-
-  @media (max-height: 768px) {
-    &.open {
-      height: 260px;
-    }
+  .drag-pill {
+    width: 40px;
+    height: 4px;
+    background: #ccc;
+    border-radius: 2px;
   }
 }
