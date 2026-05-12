@@ -6,7 +6,7 @@ import { AuthService } from '../../../core/auth/services/auth.service';
 import { Router, RouterLink } from '@angular/router';
 import { IonicModule } from '@ionic/angular';
 import { NotificationService } from '../../../shared/services/notification.service';
-import { User } from '../../../model/user';
+import { mapAuthError } from '../../../core/auth/auth-error.map';
 
 @Component({
   selector: 'app-signup.component',
@@ -22,6 +22,7 @@ export class SignupComponent {
 
   signupForm = this.fb.nonNullable.group(
     {
+      username: ['', [Validators.required]],
       email: ['', [Validators.required, Validators.email]],
       name: ['', [Validators.required]],
       surname: [''],
@@ -41,19 +42,13 @@ export class SignupComponent {
     if (!this.signupForm.valid) return;
 
     try {
-      const formValue = this.signupForm.getRawValue();
-
-      const user: User = {
-        email: formValue.email,
-        name: formValue.name,
-        surname: formValue.surname,
-      };
-
-      await this.authService.signUp(user, formValue.password);
-      this.notificationService.showToast('Successfully signed up');
-      this.router.navigate(['/home']);
+      const { username, email, name, surname, password } = this.signupForm.getRawValue();
+      await this.authService.register(username, password, name, surname, email);
+      this.notificationService.showToast('Account created! Please log in.');
+      this.router.navigate(['/auth/login']);
     } catch (err: any) {
-      this.notificationService.showToast(err.message);
+      const message = mapAuthError(err?.error?.error ?? err?.message);
+      this.notificationService.showToast(message, true);
     }
   }
 }

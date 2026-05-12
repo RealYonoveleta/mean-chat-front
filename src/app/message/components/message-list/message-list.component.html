@@ -1,8 +1,11 @@
-@for (message of messages(); track message.uid) {
+@for (message of messages(); track message._id) {
+  @if (shouldInsertTimeLabel($index)) {
+    <span class="time-label">{{ message.createdAt | date: 'short' }}</span>
+  }
   <app-message-item
     [message]="message"
     [isGrouped]="isGrouped($index)"
     [isFirstOfGroup]="isFirstOfGroup($index)"
-    [isSelf]="message.senderId === user()?.uid"
+    [isSelf]="message.sender._id === currentUserId"
   ></app-message-item>
 }

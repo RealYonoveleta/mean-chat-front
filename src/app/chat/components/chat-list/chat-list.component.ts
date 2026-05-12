@@ -1,9 +1,7 @@
-import { Component, inject } from '@angular/core';
-import { toSignal } from '@angular/core/rxjs-interop';
+import { Component, DestroyRef, inject, OnInit, signal } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { RouterLink } from '@angular/router';
 import { IonicModule } from '@ionic/angular';
-import { of, switchMap } from 'rxjs';
-import { CurrentUserService } from '../../../core/user/current-user.service';
 import { Chat } from '../../../model/chat';
 import { ChatService } from '../../services/chat.service';
 import { ChatListActionsComponent } from '../chat-list-actions/chat-list-actions.component';
@@ -15,17 +13,26 @@ import { ChatWidgetComponent } from '../chat-widget/chat-widget.component';
   styleUrls: ['./chat-list.component.scss'],
   imports: [IonicModule, ChatWidgetComponent, ChatListActionsComponent, RouterLink],
 })
-export class ChatListComponent {
+export class ChatListComponent implements OnInit {
   private chatService = inject(ChatService);
-  private currentUserService = inject(CurrentUserService);
+  private destroyRef = inject(DestroyRef);
 
-  private chats$ = this.currentUserService.currentUser$.pipe(
-    switchMap((user) => (user ? this.chatService.getChats(user.uid!) : of([]))),
-  );
+  chats = signal<Chat[]>([]);
 
-  chats = toSignal(this.chats$, { initialValue: [] });
+  ngOnInit(): void {
+    this.chatService.getChats()
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((chats) => this.chats.set(chats));
 
-  onSelect(chat: Chat) {
+    this.chatService.listenForNewChats()
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((newChat) => {
+        this.chats.update((current) => [newChat, ...current]);
+      });
+  }
+
+  onSelect(chat: Chat): void {
     this.chatService.setActiveChat(chat);
   }
 }
+

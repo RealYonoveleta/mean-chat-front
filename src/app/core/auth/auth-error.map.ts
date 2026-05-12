@@ -1,6 +1,9 @@
-export const FIREBASE_AUTH_ERROR_MAP: Record<string, string> = {
-  'auth/invalid-credential': 'Incorrect email or password',
-  'auth/user-not-found': 'Email is not registered',
-  'auth/too-many-requests': 'Too many requests',
-  'auth/email-already-in-use': 'Email is already in use',
+export const AUTH_ERROR_MAP: Record<string, string> = {
+  'Username already exists': 'Username already exists',
+  'Email already in use': 'Email is already in use',
+  'Invalid username or password': 'Incorrect username or password',
 };
+
+export function mapAuthError(serverError: string): string {
+  return AUTH_ERROR_MAP[serverError] ?? serverError ?? 'An unexpected error has occurred';
+}

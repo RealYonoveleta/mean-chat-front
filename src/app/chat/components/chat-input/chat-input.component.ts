@@ -1,12 +1,8 @@
 import { Component, inject, input } from '@angular/core';
-import { toSignal } from '@angular/core/rxjs-interop';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { IonicModule } from '@ionic/angular';
-import { Timestamp } from 'firebase/firestore';
-import { CurrentUserService } from '../../../core/user/current-user.service';
 import { MessageService } from '../../../message/services/message.service';
 import { Chat } from '../../../model/chat';
-import { Message } from '../../../model/message';
 
 @Component({
   selector: 'app-chat-input',
@@ -17,9 +13,6 @@ import { Message } from '../../../model/message';
 export class ChatInputComponent {
   private messageService = inject(MessageService);
   private fb = inject(FormBuilder);
-  private currentUserService = inject(CurrentUserService);
-
-  private user = toSignal(this.currentUserService.currentUser$);
 
   chat = input.required<Chat>();
 
@@ -27,18 +20,12 @@ export class ChatInputComponent {
     message: ['', [Validators.required]],
   });
 
-  async sendMessage() {
+  sendMessage(): void {
     if (!this.sendMessageForm.valid) return;
 
-    const message: Message = {
-      senderId: this.user()?.uid!,
-      senderDisplayName: `${this.user()?.name} ${this.user()?.surname}`,
-      content: this.sendMessageForm.value.message || '',
-      createdAt: Timestamp.now(),
-    };
-
-    await this.messageService.createMessage(this.chat()?.uid!, message);
-
+    const content = this.sendMessageForm.getRawValue().message;
+    this.messageService.sendMessage(content);
     this.sendMessageForm.reset();
   }
 }
+

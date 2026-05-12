@@ -1,18 +1,18 @@
 <form [formGroup]="createChatForm" (ngSubmit)="onSubmit()">
   <ion-input
-    label="Title"
+    label="Chat name"
     labelPlacement="floating"
-    id="title"
+    id="name"
     type="text"
-    formControlName="title"
-    placeholder="Put a title"
+    formControlName="name"
+    placeholder="Enter a chat name"
     fill="outline"
   ></ion-input>
 
   <div class="users">
     <ion-content>
       <ion-list>
-        @for (user of users(); track user.uid) {
+        @for (user of users(); track user._id) {
           <ion-item>
             <ion-label>{{ displayName(user) }}</ion-label>
             <ion-checkbox
@@ -28,7 +28,7 @@
 
   <div class="participants">
     <ion-content>
-      @for (user of createChatForm.value.participants; track user.uid) {
+      @for (user of createChatForm.value.participants; track user._id) {
         <ion-chip>
           <ion-label>{{ displayName(user) }}</ion-label>
         </ion-chip>

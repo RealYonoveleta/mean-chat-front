@@ -1,2 +1,5 @@
 <h3 class="title">{{ title() }}</h3>
-<span class="last-message">{{ lastMessage() }}</span>
+<div class="last-message-info">
+  <span class="last-message-content">{{ lastMessage() }}</span>
+  <span class="last-message-time">{{ lastMessageDate() | date: 'short' }}</span>
+</div>

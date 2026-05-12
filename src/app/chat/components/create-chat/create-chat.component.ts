@@ -1,15 +1,12 @@
-import { Component, effect, inject } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { IonicModule } from '@ionic/angular';
-import { map } from 'rxjs';
 import { CurrentUserService } from '../../../core/user/current-user.service';
 import { arrayMinLength } from '../../../core/validators/array-min-length';
 import { User } from '../../../model/user';
 import { UserService } from '../../../user/services/user.service';
 import { ChatService } from '../../services/chat.service';
-import { Chat } from '../../../model/chat';
-import { Timestamp } from 'firebase/firestore';
 
 @Component({
   selector: 'app-create-chat',
@@ -21,19 +18,14 @@ export class CreateChatComponent {
   private fb = inject(FormBuilder);
   private userService = inject(UserService);
   private currentUserService = inject(CurrentUserService);
-  private charService = inject(ChatService);
+  private chatService = inject(ChatService);
 
-  private user = toSignal(this.currentUserService.currentUser$);
+  private currentUser = this.currentUserService.getCurrentUser();
 
-  users = toSignal(
-    this.userService
-      .getAllUsers()
-      .pipe(map((users) => users.filter((user) => user.uid !== this.user()?.uid))),
-    { initialValue: [] },
-  );
+  users = toSignal(this.userService.getAllUsers(), { initialValue: [] });
 
   createChatForm = this.fb.nonNullable.group({
-    title: ['', [Validators.required]],
+    name: ['', [Validators.required]],
     participants: this.fb.nonNullable.control<User[]>([], [arrayMinLength(1)]),
   });
 
@@ -41,16 +33,17 @@ export class CreateChatComponent {
     return this.createChatForm.controls;
   }
 
-  displayName(user: User) {
+  displayName(user: User): string {
     return `${user.name} ${user.surname} - ${user.email}`;
   }
 
-  toggleParticipant(user: User) {
+  toggleParticipant(user: User): void {
     const control = this.createChatForm.get('participants');
-    const current = control?.value || [];
+    const current: User[] = control?.value || [];
+    const isAlreadySelected = current.some((u) => u._id === user._id);
 
-    if (current.includes(user)) {
-      control?.setValue(current.filter((u) => u.uid !== user.uid));
+    if (isAlreadySelected) {
+      control?.setValue(current.filter((u) => u._id !== user._id));
     } else {
       control?.setValue([...current, user]);
     }
@@ -58,25 +51,18 @@ export class CreateChatComponent {
     control?.markAsTouched();
   }
 
-  isSelected(user: User) {
-    return this.createChatForm.value.participants?.includes(user);
+  isSelected(user: User): boolean {
+    return (this.createChatForm.value.participants ?? []).some((u) => u._id === user._id);
   }
 
-  async onSubmit() {
+  async onSubmit(): Promise<void> {
     if (!this.createChatForm.valid) return;
 
-    const value = this.createChatForm.value;
-    const participants = [this.user(), ...value.participants!];
+    const value = this.createChatForm.getRawValue();
+    const participantIds = value.participants.map((u) => u._id!);
+    const isGroup = value.participants.length > 1;
 
-    const chat: Chat = {
-      title: value.title!,
-      participants: participants.map((user) => user?.uid!),
-      lastMessage: '',
-      updatedAt: Timestamp.now(),
-      createdAt: Timestamp.now(),
-    };
-
-    this.charService.createChat(chat);
+    await this.chatService.createChat(participantIds, value.name, isGroup);
     this.createChatForm.reset();
   }
 }

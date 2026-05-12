@@ -17,5 +17,9 @@ export class MessageItemComponent {
   isGrouped = input<boolean>();
   isSelf = input<boolean>();
 
-  userDisplayName = computed(() => this.message().senderDisplayName);
+  userDisplayName = computed(() => {
+    const sender = this.message().sender;
+    return sender.name ? `${sender.name} ${sender.surname}`.trim() : sender.username;
+  });
 }
+

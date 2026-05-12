@@ -1,7 +1,8 @@
-import { Component, computed, inject } from '@angular/core';
-import { toSignal } from '@angular/core/rxjs-interop';
+import { Component, inject } from '@angular/core';
 import { IonicModule } from '@ionic/angular';
+import { Router } from '@angular/router';
 import { AuthService } from '../../../core/auth/services/auth.service';
+import { CurrentUserService } from '../../../core/user/current-user.service';
 
 @Component({
   selector: 'app-account-panel',
@@ -11,11 +12,18 @@ import { AuthService } from '../../../core/auth/services/auth.service';
 })
 export class AccountPanelComponent {
   private authService = inject(AuthService);
+  private currentUserService = inject(CurrentUserService);
+  private router = inject(Router);
 
-  private user = toSignal(this.authService.user$, { initialValue: null });
-  displayName = computed(() => this.user()?.displayName);
+  get displayName(): string {
+    const user = this.currentUserService.getCurrentUser();
+    if (!user) return '';
+    return user.name ? `${user.name} ${user.surname}`.trim() : user.username;
+  }
 
-  async logout() {
-    await this.authService.signOut();
+  logout(): void {
+    this.authService.logout();
+    this.router.navigate(['/auth/login']);
   }
 }
+

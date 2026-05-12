@@ -1,11 +1,13 @@
 import { CanActivateFn, Router } from '@angular/router';
-import { AuthService } from '../auth/services/auth.service';
 import { inject } from '@angular/core';
-import { map } from 'rxjs';
+import { TokenService } from '../auth/services/token.service';
 
-export const homeGuard: CanActivateFn = (route, state) => {
-  const authService = inject(AuthService);
+export const homeGuard: CanActivateFn = () => {
+  const tokenService = inject(TokenService);
   const router = inject(Router);
 
-  return authService.user$.pipe(map((user) => (user ? true : router.parseUrl('/auth/login'))));
+  if (tokenService.isAuthenticated()) {
+    return true;
+  }
+  return router.parseUrl('/auth/login');
 };

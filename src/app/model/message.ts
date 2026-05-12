@@ -1,9 +1,9 @@
-import { Timestamp } from 'firebase/firestore';
+import { User } from './user';
 
 export interface Message {
-  uid?: string;
-  senderId: string;
-  senderDisplayName: string;
+  _id?: string;
+  chat: string;
+  sender: User;
   content: string;
-  createdAt: Timestamp;
+  createdAt: Date | string;
 }

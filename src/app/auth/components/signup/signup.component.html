@@ -3,6 +3,23 @@
 
   <section>
     <ion-input
+      label="Username"
+      labelPlacement="floating"
+      type="text"
+      id="username"
+      formControlName="username"
+      fill="outline"
+    />
+
+    <app-form-error
+      [control]="formControls.username"
+      error="required"
+      message="Username is required"
+    ></app-form-error>
+  </section>
+
+  <section>
+    <ion-input
       label="Email"
       labelPlacement="floating"
       type="email"
@@ -106,3 +123,4 @@
     <span class="text-center">Already have an account? <a routerLink="/auth/login">Log in</a></span>
   </section>
 </form>
+

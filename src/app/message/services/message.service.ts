@@ -1,88 +1,29 @@
 import { inject, Injectable } from '@angular/core';
-import {
-  addDoc,
-  collection,
-  getDocs,
-  limit,
-  onSnapshot,
-  orderBy,
-  query,
-  QueryDocumentSnapshot,
-  startAfter,
-} from 'firebase/firestore';
-import { firstValueFrom, Observable } from 'rxjs';
-import { ChatService } from '../../chat/services/chat.service';
-import { FirebaseService } from '../../core/firebase/services/firebase.service';
+import { HttpClient } from '@angular/common/http';
+import { Observable } from 'rxjs';
+import { environment } from '../../../environments/environment';
 import { Message } from '../../model/message';
-import { CurrentUserService } from '../../core/user/current-user.service';
+import { SocketService } from '../../core/socket/socket.service';
 
 @Injectable({
   providedIn: 'root',
 })
 export class MessageService {
-  private firestoreService = inject(FirebaseService);
-  private chatService = inject(ChatService);
-  private currentUserService = inject(CurrentUserService);
+  private http = inject(HttpClient);
+  private socketService = inject(SocketService);
 
-  private firestore = this.firestoreService.firestore;
-
-  private collectionName: string = 'messages';
-
-  private oldestDocPerChat = new Map<string, QueryDocumentSnapshot<any>>();
-
-  private getCollection(chatId: string) {
-    return collection(this.firestore, `chats/${chatId}/${this.collectionName}`);
-  }
-
-  async createMessage(chatId: string, message: Message) {
-    const messageCollection = this.getCollection(chatId);
-    await addDoc(messageCollection, message);
-
-    const user = await firstValueFrom(this.currentUserService.currentUser$);
-    const displayName = user.uid === message.senderId ? 'You' : message.senderDisplayName;
-
-    await this.chatService.updateChat(chatId, {
-      lastMessage: `${displayName}: ${message.content}`,
-    });
-  }
-
-  getLatestMessages(chatId: string, limitCount: number = 30) {
-    const messageCollection = this.getCollection(chatId);
-    const queryRef = query(messageCollection, orderBy('createdAt', 'desc'), limit(limitCount));
-
-    return new Observable<Message[]>((observer) => {
-      const unsubscribe = onSnapshot(
-        queryRef,
-        (snapshot) => {
-          const messages = snapshot.docs.map((doc) => ({ uid: doc.id, ...doc.data() }));
-          snapshot.docs.forEach((doc) => this.oldestDocPerChat.set(chatId, doc));
-          observer.next(messages.reverse() as Message[]);
-        },
-        (error) => observer.error(error),
-      );
-
-      return unsubscribe;
-    });
-  }
-
-  async getOlderMessages(chatId: string, limitCount: number = 20) {
-    const lastVisible = this.oldestDocPerChat.get(chatId);
-    if (!lastVisible) return [];
-
-    const messagesRef = collection(this.firestore, `chats/${chatId}/messages`);
-    const queryRef = query(
-      messagesRef,
-      orderBy('createdAt', 'desc'),
-      startAfter(lastVisible),
-      limit(limitCount),
+  getMessageHistory(chatId: string, page: number = 1, limit: number = 30): Observable<Message[]> {
+    return this.http.get<Message[]>(
+      `${environment.apiUrl}/chat/${chatId}/messages?page=${page}&limit=${limit}`
     );
+  }
 
-    const snapshot = await getDocs(queryRef);
+  listenForMessages(): Observable<Message> {
+    return this.socketService.on<Message>('chat-message');
+  }
 
-    snapshot.docs.forEach((doc) => this.oldestDocPerChat.set(chatId, doc));
-
-    const messages = snapshot.docs.map((doc) => ({ uid: doc.id, ...doc.data() }));
-
-    return messages.reverse() as Message[];
+  sendMessage(content: string): void {
+    this.socketService.emit('chat-message', content);
   }
 }
+

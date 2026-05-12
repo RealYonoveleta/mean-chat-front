@@ -1,10 +1,12 @@
 <form class="container" [formGroup]="sendMessageForm" (ngSubmit)="sendMessage()">
-  <ion-input
-    id="text-input"
-    placeholder="Message"
-    fill="solid"
-    formControlName="message"
-  ></ion-input>
+  <div class="input-actions">
+    <ion-input
+      id="text-input"
+      placeholder="Message"
+      fill="solid"
+      formControlName="message"
+    ></ion-input>
+  </div>
   <ion-button type="submit">
     <ion-icon name="send"></ion-icon>
   </ion-button>

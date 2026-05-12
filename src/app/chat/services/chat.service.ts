@@ -1,75 +1,37 @@
 import { inject, Injectable } from '@angular/core';
-import {
-  addDoc,
-  collection,
-  doc,
-  getDoc,
-  onSnapshot,
-  orderBy,
-  query,
-  updateDoc,
-  where,
-} from 'firebase/firestore';
-import { BehaviorSubject, Observable } from 'rxjs';
-import { FirestoreService } from '../../core/firebase/services/firestore.service';
+import { HttpClient } from '@angular/common/http';
+import { BehaviorSubject, firstValueFrom, Observable } from 'rxjs';
+import { environment } from '../../../environments/environment';
 import { Chat } from '../../model/chat';
+import { SocketService } from '../../core/socket/socket.service';
 import { NotificationService } from '../../shared/services/notification.service';
 
 @Injectable({
   providedIn: 'root',
 })
 export class ChatService {
-  private firestoreService = inject(FirestoreService);
+  private http = inject(HttpClient);
+  private socketService = inject(SocketService);
   private notificationService = inject(NotificationService);
-
-  private firestore = this.firestoreService.firestore;
-
-  private collection: string = 'chats';
 
   private chat = new BehaviorSubject<Chat | null>(null);
   chat$ = this.chat.asObservable();
 
-  private chatDoc(uid: string) {
-    return doc(this.firestore, this.collection, uid);
-  }
-
-  setActiveChat(chat: Chat) {
+  setActiveChat(chat: Chat): void {
     this.chat.next(chat);
   }
 
-  getChats(uid: string): Observable<Chat[]> {
-    const queryRef = query(
-      collection(this.firestore, this.collection),
-      where('participants', 'array-contains', uid),
-      orderBy('updatedAt', 'desc'),
-    );
-
-    return new Observable<Chat[]>((observer) => {
-      const unsubscribe = onSnapshot(
-        queryRef,
-        (snapshot) => {
-          const data = snapshot.docs.map((doc) => ({ uid: doc.id, ...doc.data() }));
-          observer.next(data as Chat[]);
-        },
-        (error) => observer.error(error),
-      );
-
-      return unsubscribe;
-    });
+  getChats(): Observable<Chat[]> {
+    return this.http.get<Chat[]>(`${environment.apiUrl}/chat`);
   }
 
-  async createChat(chat: Chat) {
-    const chatCollection = collection(this.firestore, this.collection);
-    await addDoc(chatCollection, chat);
-    this.notificationService.showToast(`Chat ${chat.title} created successfully`);
+  async createChat(members: string[], name: string, isGroup: boolean): Promise<void> {
+    await firstValueFrom(this.http.post<Chat>(`${environment.apiUrl}/chat`, { members, name, isGroup }));
+    this.notificationService.showToast(`Chat "${name}" created successfully`);
   }
 
-  getChat(uid: string) {
-    return getDoc(this.chatDoc(uid));
-  }
-
-  async updateChat(uid: string, partialChat: Partial<Chat>) {
-    const docRef = this.chatDoc(uid);
-    await updateDoc(docRef, partialChat);
+  listenForNewChats(): Observable<Chat> {
+    return this.socketService.on<Chat>('chat-created');
   }
 }
+

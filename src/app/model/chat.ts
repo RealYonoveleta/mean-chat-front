@@ -1,10 +1,11 @@
-import { Timestamp } from 'firebase/firestore';
+import { User } from './user';
 
 export interface Chat {
-  uid?: string;
-  title: string;
-  participants: string[];
+  _id?: string;
+  name: string;
+  isGroup: boolean;
+  members: User[];
   lastMessage: string;
-  updatedAt: Timestamp;
-  createdAt: Timestamp;
+  createdAt: Date | string;
+  updatedAt: Date | string;
 }

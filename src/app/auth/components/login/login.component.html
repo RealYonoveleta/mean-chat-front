@@ -3,25 +3,19 @@
 
   <section>
     <ion-input
-      label="Email"
+      label="Username"
       labelPlacement="floating"
-      type="email"
-      id="email"
-      formControlName="email"
-      placeholder="example@gmail.com"
+      type="text"
+      id="username"
+      formControlName="username"
+      placeholder="Enter your username"
       fill="outline"
     />
 
     <app-form-error
-      [control]="formControls.email"
+      [control]="formControls.username"
       error="required"
-      message="Email is required"
-    ></app-form-error>
-
-    <app-form-error
-      [control]="formControls.email"
-      error="email"
-      message="Must have valid email format"
+      message="Username is required"
     ></app-form-error>
   </section>
 
@@ -52,13 +46,6 @@
   </section>
 
   <ion-button type="submit" [disabled]="loginForm.invalid">Sign in</ion-button>
-
-  <section>
-    <ion-button (click)="loginWithGoogle()" class="google-btn">
-      <ion-icon src="assets/icons/google.svg" slot="start" size="large"></ion-icon>
-      Sign in with Google
-    </ion-button>
-  </section>
 
   <section>
     <span class="text-center">Don't have an account? <a routerLink="/auth/signup">Sign Up</a></span>

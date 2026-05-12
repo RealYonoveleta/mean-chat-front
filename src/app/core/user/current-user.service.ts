@@ -1,17 +1,13 @@
 import { inject, Injectable } from '@angular/core';
-import { AuthService } from '../auth/services/auth.service';
-import { UserService } from '../../user/services/user.service';
-import { filter, switchMap } from 'rxjs';
+import { TokenService, TokenPayload } from '../auth/services/token.service';
 
 @Injectable({
   providedIn: 'root',
 })
 export class CurrentUserService {
-  private authService = inject(AuthService);
-  private userService = inject(UserService);
+  private tokenService = inject(TokenService);
 
-  currentUser$ = this.authService.user$.pipe(
-    filter((user) => !!user),
-    switchMap((user) => this.userService.getUser(user.uid!)),
-  );
+  getCurrentUser(): TokenPayload | null {
+    return this.tokenService.getPayload();
+  }
 }
