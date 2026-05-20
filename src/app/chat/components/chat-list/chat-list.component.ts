@@ -29,6 +29,17 @@ export class ChatListComponent implements OnInit {
       .subscribe((newChat) => {
         this.chats.update((current) => [newChat, ...current]);
       });
+
+    this.chatService.listenForChatUpdates()
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((update) => {
+        this.chats.update((current) => {
+          const index = current.findIndex((c) => c._id === update._id);
+          if (index === -1) return current;
+          const updated: Chat = { ...current[index], lastMessage: update.lastMessage, updatedAt: update.updatedAt };
+          return [updated, ...current.filter((_, i) => i !== index)];
+        });
+      });
   }
 
   onSelect(chat: Chat): void {

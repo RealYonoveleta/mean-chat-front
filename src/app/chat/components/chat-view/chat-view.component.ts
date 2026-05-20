@@ -60,7 +60,7 @@ export class ChatViewComponent implements OnInit, OnDestroy {
         tap(() => this.scrollToBottom()),
         takeUntilDestroyed(this.destroyRef),
       )
-      .subscribe((messages) => this.messagesSubject.next(messages));
+      .subscribe((messages) => this.messagesSubject.next([...messages].reverse()));
 
     // Listen for incoming real-time messages
     this.messageService.listenForMessages()
@@ -94,7 +94,7 @@ export class ChatViewComponent implements OnInit, OnDestroy {
       .subscribe((olderMessages) => {
         if (olderMessages.length) {
           const previousHeight = scrollEl.scrollHeight;
-          this.messagesSubject.next([...olderMessages, ...this.messagesSubject.getValue()]);
+          this.messagesSubject.next([...[...olderMessages].reverse(), ...this.messagesSubject.getValue()]);
           setTimeout(() => {
             scrollEl.scrollTop = scrollEl.scrollHeight - previousHeight;
             this.isLoadingOlder = false;

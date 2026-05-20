@@ -41,5 +41,9 @@ export class ChatService {
   listenForNewChats(): Observable<Chat> {
     return this.socketService.on<Chat>('chat-created');
   }
+
+  listenForChatUpdates(): Observable<{ _id: string; lastMessage: string; updatedAt: Date }> {
+    return this.socketService.on<{ _id: string; lastMessage: string; updatedAt: Date }>('chat-updated');
+  }
 }
 
