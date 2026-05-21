@@ -17,6 +17,7 @@ form {
   align-items: center;
   gap: 20px;
   background-color: colors.$tertiary-bg;
+  color: colors.$primary-text;
   border-radius: 20px;
   box-sizing: border-box;
   padding: 50px;
@@ -33,12 +34,12 @@ form::-webkit-scrollbar-track {
 }
 
 form::-webkit-scrollbar-thumb {
-  background-color: rgba(0, 0, 0, 0.3);
+  background-color: colors.$scrollbar-thumb;
   border-radius: 10px;
 }
 
 form::-webkit-scrollbar-thumb:hover {
-  background: #555;
+  background: colors.$scrollbar-thumb-hover;
 }
 
 form h2 {

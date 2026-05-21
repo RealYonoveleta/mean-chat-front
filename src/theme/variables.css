@@ -5,6 +5,8 @@
  * https://ionicframework.com/docs/theming/dark-mode
  */
 
+@import './tokens.css';
+
 /* @import "@ionic/angular/css/palettes/dark.always.css"; */
 /* @import "@ionic/angular/css/palettes/dark.class.css"; */
 @import "@ionic/angular/css/palettes/dark.system.css";

@@ -1,3 +1,5 @@
+@use 'colors';
+
 :host {
   display: grid;
   grid-template-columns: repeat(8, 1fr);
@@ -13,7 +15,7 @@
   cursor: pointer;
 
   &:hover {
-    background: rgba(0, 0, 0, 0.05);
+    background: colors.$hover-overlay;
     border-radius: 8px;
   }
 }

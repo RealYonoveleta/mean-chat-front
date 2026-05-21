@@ -1,8 +1,15 @@
-$error-color: red;
-$app-background: #141618;
-$primary-text: #141618;
-$secondary-text: #F4F4F4;
-$tertiary-bg: #F4F4F4;
-$button-primary: #585BFF;
-$secondary-bg: #FEFEFE;
-$message-bg: #d8d8d8;
+$error-color: var(--mc-error-color, red);
+$app-background: var(--mc-app-background, #141618);
+$primary-text: var(--mc-primary-text, #141618);
+$secondary-text: var(--mc-secondary-text, #f4f4f4);
+$tertiary-bg: var(--mc-tertiary-bg, #f4f4f4);
+$button-primary: var(--mc-button-primary, #585bff);
+$secondary-bg: var(--mc-secondary-bg, #fefefe);
+$message-bg: var(--mc-message-bg, #d8d8d8);
+
+$input-bg: var(--mc-input-bg, #ffffff);
+$divider-color: var(--mc-divider-color, #eee);
+$border-color: var(--mc-border-color, #ccc);
+$hover-overlay: var(--mc-hover-overlay, rgba(0, 0, 0, 0.05));
+$scrollbar-thumb: var(--mc-scrollbar-thumb, rgba(0, 0, 0, 0.3));
+$scrollbar-thumb-hover: var(--mc-scrollbar-thumb-hover, #555);

@@ -1,3 +1,5 @@
+@use 'colors';
+
 .container {
   display: flex;
   justify-content: center;
@@ -15,7 +17,7 @@
   display: flex;
   justify-content: space-around;
   align-items: center;
-  background-color: white;
+  background-color: colors.$input-bg;
   border-radius: 999px;
   height: 80%;
 }
@@ -41,7 +43,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    background: white;
+    background: colors.$input-bg;
     touch-action: none;
     user-select: none;
   }
@@ -49,7 +51,7 @@
   .drag-pill {
     width: 40px;
     height: 4px;
-    background: #ccc;
+    background: colors.$border-color;
     border-radius: 2px;
   }
 }

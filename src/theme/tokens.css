@@ -1,0 +1,36 @@
+:root {
+  --mc-error-color: red;
+  --mc-app-background: #141618;
+  --mc-primary-text: #141618;
+  --mc-secondary-text: #f4f4f4;
+  --mc-tertiary-bg: #f4f4f4;
+  --mc-button-primary: #585bff;
+  --mc-secondary-bg: #fefefe;
+  --mc-message-bg: #d8d8d8;
+
+  --mc-input-bg: #ffffff;
+  --mc-divider-color: #eee;
+  --mc-border-color: #ccc;
+  --mc-hover-overlay: rgba(0, 0, 0, 0.05);
+  --mc-scrollbar-thumb: rgba(0, 0, 0, 0.3);
+  --mc-scrollbar-thumb-hover: #555;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --mc-app-background: #0f1217;
+    --mc-primary-text: #e8edf2;
+    --mc-secondary-text: #f4f4f4;
+    --mc-tertiary-bg: #20262d;
+    --mc-button-primary: #585bff;
+    --mc-secondary-bg: #2a3139;
+    --mc-message-bg: #2f3740;
+
+    --mc-input-bg: #2f3740;
+    --mc-divider-color: #3f4954;
+    --mc-border-color: #4b5563;
+    --mc-hover-overlay: rgba(255, 255, 255, 0.08);
+    --mc-scrollbar-thumb: rgba(255, 255, 255, 0.25);
+    --mc-scrollbar-thumb-hover: rgba(255, 255, 255, 0.45);
+  }
+}
