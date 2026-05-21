@@ -1,59 +1,91 @@
-# AngularChatApp
+# Mean Chat Frontend
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 21.1.2.
+Frontend client for the Mean Chat application.
 
-## Development server
+Stack:
 
-To start a local development server, run:
+- Angular 21
+- Ionic UI components
+- Socket.IO client
+- Reactive forms
 
-```bash
-ng serve
-```
+## Features
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
+- Login and signup flows
+- Chat list with realtime updates
+- Chat view with paginated history
+- Realtime message streaming
+- Emoji picker
+- Location message support (Geo API)
+- System-aware light/dark theme behavior
 
-## Code scaffolding
-
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
-
-```bash
-ng generate component component-name
-```
-
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
-
-```bash
-ng generate --help
-```
-
-## Building
-
-To build the project run:
+## Scripts
 
 ```bash
-ng build
+npm run start
+npm run build
+npm run test
 ```
 
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
+## Local Development
 
-## Running unit tests
-
-To execute unit tests with the [Vitest](https://vitest.dev/) test runner, use the following command:
+1. Install dependencies:
 
 ```bash
-ng test
+npm install
 ```
 
-## Running end-to-end tests
-
-For end-to-end (e2e) testing, run:
+2. Run dev server:
 
 ```bash
-ng e2e
+npm run start
 ```
 
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
+3. Open:
 
-## Additional Resources
+- http://localhost:4200
 
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+## Environment Configuration
+
+Local dev uses src/environments/environment.development.ts.
+
+Production build uses src/environments/environment.ts.
+
+Current expected values:
+
+- apiUrl: backend base URL
+- wsUrl: backend Socket.IO URL
+- geoapifyKey: location API key
+- emojiApiKey: emoji API key
+
+## Docker Behavior
+
+Frontend Docker build injects API keys into environment.ts at build time using build args:
+
+- GEOAPIFY_API_KEY
+- EMOJI_API_KEY
+
+In docker-compose.yml these values come from root .env.
+
+## Routing Overview
+
+- /auth/login
+- /auth/signup
+- /home/create-chat
+- /home/:chatId
+
+## Project Structure
+
+- src/app/auth: auth pages
+- src/app/chat: chat views, list, input, services
+- src/app/message: message rendering and handlers
+- src/app/core: auth/socket/guards/interceptors/shared core services
+- src/app/shared: reusable UI components and utilities
+- src/environments: runtime config files
+- src/theme: Ionic and app theme variables
+
+## Build Notes
+
+- Angular build currently reports bundle budget warnings in production mode.
+- This does not block app startup, but should be optimized over time.
+
