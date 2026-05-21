@@ -10,6 +10,7 @@
 
   --mc-input-bg: #ffffff;
   --mc-divider-color: #eee;
+  --mc-divider-subtle: #d9dde3;
   --mc-border-color: #ccc;
   --mc-hover-overlay: rgba(0, 0, 0, 0.05);
   --mc-scrollbar-thumb: rgba(0, 0, 0, 0.3);
@@ -28,6 +29,7 @@
 
     --mc-input-bg: #2f3740;
     --mc-divider-color: #3f4954;
+    --mc-divider-subtle: #313944;
     --mc-border-color: #4b5563;
     --mc-hover-overlay: rgba(255, 255, 255, 0.08);
     --mc-scrollbar-thumb: rgba(255, 255, 255, 0.25);

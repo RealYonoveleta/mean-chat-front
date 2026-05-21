@@ -40,9 +40,27 @@ ion-content {
 #chat-list > .chat-item {
   --ion-item-background: colors.$app-background;
   --color: colors.$secondary-text;
+  --inner-border-width: 0;
   --background-hover: linear-gradient(to right, #2f3447, #313337);
   --background-hover-opacity: 0.8;
   --border-radius: 10px;
+  position: relative;
+}
+
+#chat-list > .chat-item::after {
+  content: '';
+  position: absolute;
+  left: 14px;
+  right: 14px;
+  bottom: 0;
+  height: 1px;
+  background: colors.$divider-subtle;
+  opacity: 0.22;
+  pointer-events: none;
+}
+
+#chat-list > .chat-item:last-child::after {
+  content: none;
 }
 
 app-chat-widget {

@@ -23,6 +23,11 @@ export class SocketService implements OnDestroy {
     this.socket = null;
   }
 
+  updateToken(token: string): void {
+    if (!this.socket) return;
+    this.socket.auth = { token };
+  }
+
   emit(event: string, data?: any): void {
     this.socket?.emit(event, data);
   }

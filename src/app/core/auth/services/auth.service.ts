@@ -24,15 +24,23 @@ export class AuthService {
 
   async login(username: string, password: string): Promise<void> {
     const response = await firstValueFrom(
-      this.http.post<{ token: string }>(`${environment.apiUrl}/auth/login`, { username, password })
+      this.http.post<{ token: string; refreshToken: string }>(`${environment.apiUrl}/auth/login`, {
+        username,
+        password,
+      })
     );
-    this.tokenService.setToken(response.token);
+    this.tokenService.setTokens(response.token, response.refreshToken);
     this._isAuthenticated.next(true);
     this.socketService.connect(response.token);
   }
 
   logout(): void {
-    this.tokenService.removeToken();
+    const refreshToken = this.tokenService.getRefreshToken();
+    if (refreshToken) {
+      void firstValueFrom(this.http.post(`${environment.apiUrl}/auth/logout`, { refreshToken })).catch(() => undefined);
+    }
+
+    this.tokenService.clearTokens();
     this._isAuthenticated.next(false);
     this.socketService.disconnect();
   }
