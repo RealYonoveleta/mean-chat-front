@@ -12,6 +12,7 @@ Stack:
 ## Features
 
 - Login and signup flows
+- Automatic session refresh using refresh tokens
 - Chat list with realtime updates
 - Chat view with paginated history
 - Realtime message streaming
@@ -57,6 +58,13 @@ Current expected values:
 - wsUrl: backend Socket.IO URL
 - geoapifyKey: location API key
 - emojiApiKey: emoji API key
+
+## Authentication Behavior
+
+- Frontend stores access token and refresh token in localStorage.
+- Access token is sent in Authorization headers.
+- On 401, interceptor calls /auth/refresh once, updates both tokens, and retries the original request.
+- If refresh fails, user session is cleared and app redirects to /auth/login.
 
 ## Docker Behavior
 
