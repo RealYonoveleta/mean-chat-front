@@ -1,22 +1,48 @@
-import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
-import { IonicModule } from '@ionic/angular';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { provideRouter } from '@angular/router';
+import { EMPTY, of } from 'rxjs';
+import { vi } from 'vitest';
+import { AuthService } from '../../../core/auth/services/auth.service';
+import { CurrentUserService } from '../../../core/user/current-user.service';
+import { ChatService } from '../../services/chat.service';
 
-import { ChatHomeComponentComponent } from './chat-home.component.component';
+import { ChatHomeComponent } from './chat-home.component';
 
-describe('ChatHomeComponentComponent', () => {
-  let component: ChatHomeComponentComponent;
-  let fixture: ComponentFixture<ChatHomeComponentComponent>;
+describe('ChatHomeComponent', () => {
+  let component: ChatHomeComponent;
+  let fixture: ComponentFixture<ChatHomeComponent>;
 
-  beforeEach(waitForAsync(() => {
-    TestBed.configureTestingModule({
-      declarations: [ ChatHomeComponentComponent ],
-      imports: [IonicModule.forRoot()]
+  beforeEach(async () => {
+    await TestBed.configureTestingModule({
+      imports: [ChatHomeComponent],
+      providers: [
+        provideRouter([]),
+        {
+          provide: AuthService,
+          useValue: { logout: vi.fn() },
+        },
+        {
+          provide: CurrentUserService,
+          useValue: {
+            getCurrentUser: () => ({ userId: 'u1', username: 'user', name: 'Test', surname: 'User' }),
+          },
+        },
+        {
+          provide: ChatService,
+          useValue: {
+            getChats: () => of([]),
+            listenForNewChats: () => EMPTY,
+            listenForChatUpdates: () => EMPTY,
+            setActiveChat: vi.fn(),
+          },
+        },
+      ],
     }).compileComponents();
 
-    fixture = TestBed.createComponent(ChatHomeComponentComponent);
+    fixture = TestBed.createComponent(ChatHomeComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
-  }));
+  });
 
   it('should create', () => {
     expect(component).toBeTruthy();

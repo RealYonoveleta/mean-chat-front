@@ -42,6 +42,7 @@
     "@angular/compiler-cli": "^21.1.0",
     "@ionic/angular": "^8.7.17",
     "@ionic/angular-toolkit": "latest",
+    "@vitest/coverage-v8": "^4.0.18",
     "jsdom": "^27.1.0",
     "typescript": "~5.9.2",
     "vitest": "^4.0.8"
